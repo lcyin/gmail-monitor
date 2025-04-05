@@ -8,7 +8,7 @@ const UPDATE_LOCATION_URL =
 const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
 export async function automateNetflixConfirmation(url = UPDATE_LOCATION_URL) {
-  const browser = await chromium.launch({ headless: false }); // Set to true for headless mode
+  const browser = await chromium.launch({ headless: true }); // Set to true for headless mode
   const page = await browser.newPage();
 
   try {
