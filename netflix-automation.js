@@ -1,4 +1,5 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 const path = require("path");
 const { chromium } = require("playwright");
 const UPDATE_LOCATION_URL =
