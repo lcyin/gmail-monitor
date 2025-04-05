@@ -2,8 +2,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import { google } from "googleapis";
 import path from "path";
-import { fs } from "fs";
-const fs = fs.promises;
+import fs from "fs";
+const fsx = fs.promises;
 import * as express from "express";
 import { cheerio } from "cheerio";
 
@@ -17,7 +17,7 @@ const BACKEND_HOST = process.env.BACKEND_HOST;
 const PORT = process.env.PORT;
 async function authorize() {
   const credentials = JSON.parse(
-    process.env.GOOGLE_CREDENTIALS || (await fs.readFile(CREDENTIALS_PATH))
+    process.env.GOOGLE_CREDENTIALS || (await fsx.readFile(CREDENTIALS_PATH))
   );
   const { client_secret, client_id } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
@@ -28,7 +28,7 @@ async function authorize() {
 
   try {
     const token = JSON.parse(
-      process.env.GOOGLE_TOKEN || (await fs.readFile(TOKEN_PATH))
+      process.env.GOOGLE_TOKEN || (await fsx.readFile(TOKEN_PATH))
     );
     console.log("🚀 ~ authorize ~ token:", token);
     oAuth2Client.setCredentials(token);
@@ -60,7 +60,8 @@ async function getNewToken(oAuth2Client) {
           return reject(err);
         }
         oAuth2Client.setCredentials(token);
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token))
+        fsx
+          .writeFile(TOKEN_PATH, JSON.stringify(token))
           .then(() => {
             console.log("Token stored to", TOKEN_PATH);
             resolve(oAuth2Client);
