@@ -1,20 +1,23 @@
+require("dotenv").config();
 const { google } = require("googleapis");
 const fs = require("fs").promises;
 const path = require("path");
 const express = require("express");
 const cheerio = require("cheerio");
+const axios = require("axios");
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = path.join(__dirname, "token.json");
 const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
-
+const BACKEND_HOST = process.env.BACKEND_HOST;
+const PORT = process.env.PORT;
 async function authorize() {
   const credentials = JSON.parse(await fs.readFile(CREDENTIALS_PATH));
   const { client_secret, client_id } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
     client_secret,
-    "http://localhost:8080/callback"
+    BACKEND_HOST + "/callback"
   );
 
   try {
@@ -57,8 +60,8 @@ async function getNewToken(oAuth2Client) {
       });
     });
 
-    const server = app.listen(8080, () =>
-      console.log("Listening on http://localhost:8080")
+    const server = app.listen(PORT, BACKEND_HOST, () =>
+      console.log(`Listening on ${BACKEND_HOST}`)
     );
   });
 }
@@ -86,7 +89,9 @@ async function checkGmail(auth) {
 
   const subject =
     msg.data.payload.headers.find((h) => h.name === "Subject")?.value || "";
-  if (subject.toLowerCase().includes("verify your device")) {
+  console.log("🚀 ~ checkGmail ~ subject:", subject);
+
+  if (subject.includes("如何更新 Netflix 同戶裝置")) {
     const parts = msg.data.payload.parts || [msg.data.payload];
     for (const part of parts) {
       if (part.mimeType === "text/html") {
@@ -95,28 +100,6 @@ async function checkGmail(auth) {
       }
     }
   }
-  //   for (const message of messages) {
-  //     const msg = await gmail.users.messages.get({
-  //       userId: "me",
-  //       id: message.id,
-  //       format: "full",
-  //     });
-  //     const internalDate = msg.data.internalDate; // Unix timestamp in milliseconds
-  //     const sentTime = new Date(parseInt(internalDate));
-  //     console.log("🚀 ~ checkGmail ~ sentTime:", sentTime);
-
-  //     const subject =
-  //       msg.data.payload.headers.find((h) => h.name === "Subject")?.value || "";
-  //     if (subject.toLowerCase().includes("verify your device")) {
-  //       const parts = msg.data.payload.parts || [msg.data.payload];
-  //       for (const part of parts) {
-  //         if (part.mimeType === "text/html") {
-  //           const html = Buffer.from(part.body.data, "base64").toString("utf-8");
-  //           return extractLink(html);
-  //         }
-  //       }
-  //     }
-  //   }
   return null;
 }
 
@@ -125,7 +108,24 @@ function extractLink(html) {
   const links = $("a[href]");
   for (let i = 0; i < links.length; i++) {
     const href = $(links[i]).attr("href");
-    if (href.includes("netflix.com") && href.includes("verify")) return href;
+    if (
+      href.includes("netflix.com") &&
+      href.includes("update-primary-location")
+    ) {
+      return href;
+    }
+  }
+  return null;
+}
+
+function extractButtonLink(html) {
+  console.log("🚀 ~ extractButtonLink ~ html:", html);
+  const $ = cheerio.load(html);
+
+  const button = $("a.button");
+  // console.log("🚀 ~ extractButtonLink ~ button:", button);
+  if (button.length) {
+    return button.attr("href");
   }
   return null;
 }
@@ -134,8 +134,24 @@ async function main() {
   const auth = await authorize();
   console.log("Monitoring Gmail for Netflix confirmation emails...");
   const link = await checkGmail(auth);
-  if (link) console.log("Found confirmation link:", link);
-  else console.log("No confirmation email found.");
+  if (link) {
+    console.log("Found confirmation link:", link);
+    try {
+      // const response = await axios.get(link);
+      // const htmlContent = response.data;
+      // const buttonLink = extractButtonLink(htmlContent);
+      // console.log("Response from the link:", htmlContent);
+
+      // Write the HTML content to a file
+      const outputPath = path.join(__dirname, "response.html");
+      await fs.writeFile(outputPath, htmlContent, "utf-8");
+      console.log(`HTML content written to ${outputPath}`);
+    } catch (error) {
+      console.error("Error requesting the link:", error.message);
+    }
+  } else {
+    console.log("No confirmation email found.");
+  }
   //   setInterval(async () => {
   //     const link = await checkGmail(auth);
   //     if (link) console.log("Found confirmation link:", link);
