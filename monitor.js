@@ -1,10 +1,13 @@
-require("dotenv").config();
-const { google } = require("googleapis");
-const fs = require("fs").promises;
-const path = require("path");
-const express = require("express");
-const cheerio = require("cheerio");
-const axios = require("axios");
+import dotenv from "dotenv";
+dotenv.config();
+import { google } from "googleapis";
+import path from "path";
+import { fs } from "fs";
+const fs = fs.promises;
+import * as express from "express";
+import { cheerio } from "cheerio";
+
+// const axios = require("axios");
 import { automateNetflixConfirmation } from "./netflix-automation.js";
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
