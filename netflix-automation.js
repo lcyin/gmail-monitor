@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
-const path = require("path");
-const { chromium } = require("playwright");
+// import path from "path";
+import { chromium } from "playwright";
+
 const UPDATE_LOCATION_URL =
   " https://www.netflix.com/account/update-primary-location?nftoken=BgiQlevcAxKkAR17E9Et7ScfD50OQpeD4AhalB1KcicF280veVuIbIRE4sI32+PTK4XfZlfrwJKXXNnKGCvaUebxGxg8erAhSApzY7bVFaa3WeT1iIKo7FawELfBSJuH/mSdDkDN/hX8TYhXvcDGpL7PSrkhkTvT1CV/DVuIl3F/YHAJc02Ym1YfkxwLzLtAxlKPnsblCOrlSdcfUE0tZLnOG388yoZSVK9W037xGAYiDgoMIqF5AXzLYEdStkY4&g=ea347790-91db-40c2-af99-194794624de4&lnktrk=EVO&operation=update&lkid=UPDATE_HOUSEHOLD_REQUESTED_OTP_CTA";
 const USER_EMAIL = process.env.USER_EMAIL;
