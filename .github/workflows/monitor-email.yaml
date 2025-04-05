@@ -1,0 +1,29 @@
+name: Monitor Netflix Email
+
+# Trigger the workflow manually from the GitHub UI
+on:
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # Use the version compatible with your script
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Run monitor.js
+      - name: Run Monitor Script
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # Store credentials in GitHub Secrets
+        run: node monitor.js

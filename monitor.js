@@ -12,7 +12,9 @@ const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
 const BACKEND_HOST = process.env.BACKEND_HOST;
 const PORT = process.env.PORT;
 async function authorize() {
-  const credentials = JSON.parse(await fs.readFile(CREDENTIALS_PATH));
+  const credentials = JSON.parse(
+    process.env.GOOGLE_CREDENTIALS || (await fs.readFile(CREDENTIALS_PATH))
+  );
   const { client_secret, client_id } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
