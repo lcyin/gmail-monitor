@@ -26,4 +26,9 @@ jobs:
       - name: Run Monitor Script
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} # Store credentials in GitHub Secrets
+          GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }} # Store token in GitHub Secrets
+          BACKEND_URL: ${{ secrets.BACKEND_URL }} # Store backend URL in GitHub Secrets
+          PORT: ${{ secrets.PORT }} # Store port in GitHub Secrets
+          USER_EMAIL: ${{ secrets.USER_EMAIL }} # Store user email in GitHub Secrets
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }} # Store user password in GitHub Secrets
         run: node monitor.js
