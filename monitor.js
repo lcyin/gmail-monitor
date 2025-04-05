@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs";
 const fsx = fs.promises;
 import * as express from "express";
-import { cheerio } from "cheerio";
+import * as cheerio from "cheerio";
 
 // const axios = require("axios");
 import { automateNetflixConfirmation } from "./netflix-automation.js";
