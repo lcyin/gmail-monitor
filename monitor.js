@@ -23,7 +23,9 @@ async function authorize() {
   );
 
   try {
-    const token = await fs.readFile(TOKEN_PATH);
+    const token = JSON.parse(
+      process.env.GOOGLE_TOKEN || (await fs.readFile(TOKEN_PATH))
+    );
     oAuth2Client.setCredentials(JSON.parse(token));
     return oAuth2Client;
   } catch (err) {
@@ -62,8 +64,8 @@ async function getNewToken(oAuth2Client) {
       });
     });
 
-    const server = app.listen(PORT, BACKEND_HOST, () =>
-      console.log(`Listening on ${BACKEND_HOST}`)
+    const server = app.listen(8080, () =>
+      console.log("Listening on http://localhost:8080")
     );
   });
 }
@@ -143,11 +145,6 @@ async function main() {
       // const htmlContent = response.data;
       // const buttonLink = extractButtonLink(htmlContent);
       // console.log("Response from the link:", htmlContent);
-
-      // Write the HTML content to a file
-      const outputPath = path.join(__dirname, "response.html");
-      await fs.writeFile(outputPath, htmlContent, "utf-8");
-      console.log(`HTML content written to ${outputPath}`);
     } catch (error) {
       console.error("Error requesting the link:", error.message);
     }
