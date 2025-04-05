@@ -5,7 +5,7 @@ const UPDATE_LOCATION_URL =
   " https://www.netflix.com/account/update-primary-location?nftoken=BgiQlevcAxKkAR17E9Et7ScfD50OQpeD4AhalB1KcicF280veVuIbIRE4sI32+PTK4XfZlfrwJKXXNnKGCvaUebxGxg8erAhSApzY7bVFaa3WeT1iIKo7FawELfBSJuH/mSdDkDN/hX8TYhXvcDGpL7PSrkhkTvT1CV/DVuIl3F/YHAJc02Ym1YfkxwLzLtAxlKPnsblCOrlSdcfUE0tZLnOG388yoZSVK9W037xGAYiDgoMIqF5AXzLYEdStkY4&g=ea347790-91db-40c2-af99-194794624de4&lnktrk=EVO&operation=update&lkid=UPDATE_HOUSEHOLD_REQUESTED_OTP_CTA";
 const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
-async function automateNetflixConfirmation(url) {
+export async function automateNetflixConfirmation(url = UPDATE_LOCATION_URL) {
   const browser = await chromium.launch({ headless: false }); // Set to true for headless mode
   const page = await browser.newPage();
 
@@ -48,4 +48,4 @@ async function automateNetflixConfirmation(url) {
   }
 }
 
-automateNetflixConfirmation(UPDATE_LOCATION_URL).catch(console.error);
+// automateNetflixConfirmation(UPDATE_LOCATION_URL).catch(console.error);

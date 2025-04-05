@@ -124,18 +124,6 @@ function extractLink(html) {
   return null;
 }
 
-function extractButtonLink(html) {
-  console.log("🚀 ~ extractButtonLink ~ html:", html);
-  const $ = cheerio.load(html);
-
-  const button = $("a.button");
-  // console.log("🚀 ~ extractButtonLink ~ button:", button);
-  if (button.length) {
-    return button.attr("href");
-  }
-  return null;
-}
-
 async function main() {
   const auth = await authorize();
   console.log("Monitoring Gmail for Netflix confirmation emails...");
@@ -143,10 +131,7 @@ async function main() {
   if (link) {
     console.log("Found confirmation link:", link);
     try {
-      // const response = await axios.get(link);
-      // const htmlContent = response.data;
-      // const buttonLink = extractButtonLink(htmlContent);
-      // console.log("Response from the link:", htmlContent);
+      automateNetflixConfirmation(link);
     } catch (error) {
       console.error("Error requesting the link:", error.message);
     }
