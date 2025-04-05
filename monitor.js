@@ -5,6 +5,7 @@ const path = require("path");
 const express = require("express");
 const cheerio = require("cheerio");
 const axios = require("axios");
+import { automateNetflixConfirmation } from "./netflix-automation.js";
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = path.join(__dirname, "token.json");
