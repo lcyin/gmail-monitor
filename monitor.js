@@ -11,8 +11,8 @@ import * as cheerio from "cheerio";
 import { automateNetflixConfirmation } from "./netflix-automation.js";
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
-const TOKEN_PATH = path.join(__dirname, "token.json");
-const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
+// const TOKEN_PATH = path.join(__dirname, "token.json");
+// const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
 const BACKEND_HOST = process.env.BACKEND_HOST;
 const PORT = process.env.PORT;
 async function authorize() {
