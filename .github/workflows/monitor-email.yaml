@@ -22,6 +22,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      # Install Playwright
+      - name: Install Playwright Browsers
+        run: npx playwright install
+
       # Run monitor.js
       - name: Run Monitor Script
         env:
