@@ -26,9 +26,11 @@ async function authorize() {
     const token = JSON.parse(
       process.env.GOOGLE_TOKEN || (await fs.readFile(TOKEN_PATH))
     );
-    oAuth2Client.setCredentials(JSON.parse(token));
+    console.log("🚀 ~ authorize ~ token:", token);
+    oAuth2Client.setCredentials(token);
     return oAuth2Client;
   } catch (err) {
+    console.log("🚀 ~ authorize ~ err:", err);
     console.log("No token found, initiating new authentication flow...");
     return getNewToken(oAuth2Client);
   }
