@@ -3,9 +3,11 @@ name: Monitor Netflix Email
 # Trigger the workflow manually from the GitHub UI
 on:
   workflow_dispatch: # Allows manual triggering of the workflow
+  # Schedule the workflow to run at specific times
   schedule:
-    # Schedule the workflow to run every 5 minute
-    - cron: "*/5 * * * *"
+    - cron: "*/5 11 * * 1-5" # Every 5 minutes from 11:00 to 11:55 UTC (7:00-7:55 PM UTC+8), weekdays
+    - cron: "*/5 12 * * 1-5" # Every 5 minutes from 12:00 to 12:55 UTC (8:00-8:55 PM UTC+8), weekdays
+    - cron: "0 13 * * 1-5" # Exactly 13:00 UTC (9:00 PM UTC+8), weekdays
 
 jobs:
   monitor:
