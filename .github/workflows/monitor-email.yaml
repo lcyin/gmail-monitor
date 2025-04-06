@@ -4,9 +4,8 @@ name: Monitor Netflix Email
 on:
   workflow_dispatch: # Allows manual triggering of the workflow
   schedule:
-    # Schedule the workflow to run every 5 minutes
-    - cron: "*/1 * * * *" # Adjust the schedule as needed
-    # Uncomment the line below to run every 1 minutes
+    # Schedule the workflow to run every 5 minute
+    - cron: "*/5 * * * *"
 
 jobs:
   monitor:
