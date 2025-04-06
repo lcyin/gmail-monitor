@@ -2,17 +2,20 @@ import dotenv from "dotenv";
 dotenv.config();
 import { google } from "googleapis";
 import path from "path";
+import { fileURLToPath } from "url";
 import fs from "fs";
 const fsx = fs.promises;
-import * as express from "express";
+import express from "express";
 import * as cheerio from "cheerio";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // const axios = require("axios");
 import { automateNetflixConfirmation } from "./netflix-automation.js";
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
-// const TOKEN_PATH = path.join(__dirname, "token.json");
-// const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
+const TOKEN_PATH = path.join(__dirname, "token.json");
+const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
 const BACKEND_HOST = process.env.BACKEND_HOST;
 const PORT = process.env.PORT;
 async function authorize() {

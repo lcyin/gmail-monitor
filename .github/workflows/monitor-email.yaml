@@ -2,7 +2,7 @@ name: Monitor Netflix Email
 
 # Trigger the workflow manually from the GitHub UI
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   monitor:

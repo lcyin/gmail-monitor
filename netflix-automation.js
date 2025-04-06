@@ -4,7 +4,7 @@ dotenv.config();
 import { chromium } from "playwright";
 
 const UPDATE_LOCATION_URL =
-  " https://www.netflix.com/account/update-primary-location?nftoken=BgiQlevcAxKkAR17E9Et7ScfD50OQpeD4AhalB1KcicF280veVuIbIRE4sI32+PTK4XfZlfrwJKXXNnKGCvaUebxGxg8erAhSApzY7bVFaa3WeT1iIKo7FawELfBSJuH/mSdDkDN/hX8TYhXvcDGpL7PSrkhkTvT1CV/DVuIl3F/YHAJc02Ym1YfkxwLzLtAxlKPnsblCOrlSdcfUE0tZLnOG388yoZSVK9W037xGAYiDgoMIqF5AXzLYEdStkY4&g=ea347790-91db-40c2-af99-194794624de4&lnktrk=EVO&operation=update&lkid=UPDATE_HOUSEHOLD_REQUESTED_OTP_CTA";
+  "https://www.netflix.com/account/update-primary-location?nftoken=BgiQlevcAxKkAZHlKNfM/TkZmyyBD4EBxhSOYb93BbPRi+ttyCrzOHy+uwA8m2gu1c+LRudHaN3BRTzB4uN0EfsQBg8JDtOgqhzxGvK7JyLPFSsu7/1EUWAb+5SxE/xuhauSdJpgK6BMY6uH43RjUuzVvNv7rz57nOJ5+lKT1R6JmTRdfERgDdvC6lPm0i1OEEbT55lem6Py5kd2bujfBVBGQgg6WSUPg6063yKeGAYiDgoMDL11bsjMU0CB04cK&g=326ed4f6-cc43-49dd-acdc-e25f483aa510&lnktrk=EVO&operation=update&lkid=UPDATE_HOUSEHOLD_REQUESTED_OTP_CTA";
 const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
 export async function automateNetflixConfirmation(url = UPDATE_LOCATION_URL) {
@@ -24,6 +24,7 @@ export async function automateNetflixConfirmation(url = UPDATE_LOCATION_URL) {
     await page.fill('input[name="password"]', USER_PASSWORD); // Replace with your Netflix password
     await page.click('button[type="submit"]');
     await page.waitForURL("https://www.netflix.com/*", { timeout: 30000 }); // Wait for dashboard
+    console.log("Logged in successfully.");
     //     // // Step 2: Trigger device location confirmation (adjust based on Netflix UI)
     // console.log("Triggering device location confirmation...");
     // await page.goto("https://www.netflix.com/youraccount"); // Or wherever the confirmation is triggered
@@ -38,11 +39,13 @@ export async function automateNetflixConfirmation(url = UPDATE_LOCATION_URL) {
     // // Step 4: Confirm the link
     // console.log("Confirming the link...");
     await page.goto(url);
+    console.log("Navigated to Netflix confirmation URL.");
     await page.waitForTimeout(5000);
     await page.click(
       'button[data-uia="set-primary-location-action"][role="button"]'
+      // Adjust selector based on actual button
     ); // Adjust selector based on actual button
-    // console.log("Confirmation completed.");
+    console.log("Confirmation completed.");
   } catch (err) {
     console.error("Error during automation:", err.message);
   } finally {
