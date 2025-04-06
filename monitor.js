@@ -33,7 +33,6 @@ async function authorize() {
     const token = JSON.parse(
       process.env.GOOGLE_TOKEN || (await fsx.readFile(TOKEN_PATH))
     );
-    console.log("🚀 ~ authorize ~ token:", token);
     oAuth2Client.setCredentials(token);
     return oAuth2Client;
   } catch (err) {
