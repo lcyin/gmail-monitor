@@ -19,6 +19,40 @@ const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
 const BACKEND_HOST = process.env.BACKEND_HOST;
 const PORT = process.env.PORT;
 async function authorize() {
+  // First check if we have a token in environment variables
+  if (process.env.GOOGLE_TOKEN) {
+    try {
+      const token = JSON.parse(process.env.GOOGLE_TOKEN);
+      const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+      const { client_secret, client_id } = credentials.web;
+
+      const oAuth2Client = new google.auth.OAuth2(
+        client_id,
+        client_secret,
+        BACKEND_HOST + "/callback"
+      );
+
+      oAuth2Client.setCredentials(token);
+
+      // Check if token is expired and refresh if needed
+      if (oAuth2Client.isTokenExpiring()) {
+        console.log("Token is expiring, refreshing...");
+        const { credentials } = await oAuth2Client.refreshAccessToken();
+        oAuth2Client.setCredentials(credentials);
+
+        // Update the environment variable with the new token
+        process.env.GOOGLE_TOKEN = JSON.stringify(credentials);
+        console.log("Token refreshed");
+      }
+
+      return oAuth2Client;
+    } catch (err) {
+      console.log("Error using token from environment:", err.message);
+      // Fall back to file-based authentication
+    }
+  }
+
+  // Fall back to file-based authentication if environment variables aren't available
   const credentials = JSON.parse(
     process.env.GOOGLE_CREDENTIALS || (await fsx.readFile(CREDENTIALS_PATH))
   );
@@ -35,6 +69,18 @@ async function authorize() {
     );
     console.log("🚀 ~ authorize ~ token:", token);
     oAuth2Client.setCredentials(token);
+
+    // Check if token is expired and refresh if needed
+    if (oAuth2Client.isTokenExpiring()) {
+      console.log("Token is expiring, refreshing...");
+      const { credentials } = await oAuth2Client.refreshAccessToken();
+      oAuth2Client.setCredentials(credentials);
+
+      // Save the refreshed token
+      await fsx.writeFile(TOKEN_PATH, JSON.stringify(credentials));
+      console.log("Token refreshed and saved");
+    }
+
     return oAuth2Client;
   } catch (err) {
     console.log("🚀 ~ authorize ~ err:", err);
@@ -48,6 +94,7 @@ async function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
+    prompt: "consent"
   });
   console.log("Authorize this app by visiting this URL:", authUrl);
 
@@ -133,24 +180,24 @@ function extractLink(html) {
 }
 
 async function main() {
-  const auth = await authorize();
-  console.log("Monitoring Gmail for Netflix confirmation emails...");
-  const link = await checkGmail(auth);
-  if (link) {
-    console.log("Found confirmation link:", link);
-    try {
-      automateNetflixConfirmation(link);
-    } catch (error) {
-      console.error("Error requesting the link:", error.message);
+  try {
+    const auth = await authorize();
+    console.log("Monitoring Gmail for Netflix confirmation emails...");
+    const link = await checkGmail(auth);
+    if (link) {
+      console.log("Found confirmation link:", link);
+      try {
+        await automateNetflixConfirmation(link);
+      } catch (error) {
+        console.error("Error requesting the link:", error.message);
+      }
+    } else {
+      console.log("No confirmation email found.");
     }
-  } else {
-    console.log("No confirmation email found.");
+  } catch (error) {
+    console.error("Error in main process:", error.message);
+    process.exit(1);
   }
-  //   setInterval(async () => {
-  //     const link = await checkGmail(auth);
-  //     if (link) console.log("Found confirmation link:", link);
-  //     else console.log("No confirmation email found.");
-  //   }, 1000);
 }
 
 main().catch(console.error);
